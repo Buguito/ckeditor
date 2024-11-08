@@ -35,10 +35,19 @@ module Ckeditor
 
     protected
 
-    def render(input)
+    def render(input)      
       output_buffer << input
-      output_buffer << javascript_tag(Utils.js_replace(options['id'], ck_options))
-      output_buffer
+
+      if options.has_key?('nonce')
+        nonce = options['nonce']
+        output_buffer << "<script type='text/javascript' nonce='#{nonce}'>".html_safe
+        output_buffer << Utils.js_replace(options['id'], ck_options).html_safe
+        output_buffer << '</script>'.html_safe
+      else
+        output_buffer << javascript_tag(Utils.js_replace(options['id'], ck_options))
+      end
+
+      output_buffer             
     end
 
     def output_buffer
